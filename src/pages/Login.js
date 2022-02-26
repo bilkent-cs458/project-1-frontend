@@ -1,6 +1,17 @@
 import React, {useState, useEffect} from "react";
 import NetflixLogo from "../img/netflix-logo.svg"
-import {Box, Button, Container, FormControl, styled, TextField, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    Checkbox,
+    Container,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    styled,
+    TextField,
+    Typography
+} from "@mui/material";
 import {makeStyles} from "@material-ui/core";
 import {withStyles} from "@mui/material";
 
@@ -9,6 +20,11 @@ const useStyles = makeStyles(() => ({
         color: "white",
         borderColor: "white",
         fontFamily: "Work Sans",
+    },
+    checkboxLabel: {
+        "& .MuiFormControlLabel-root": {
+            color: "#616161"
+        }
     },
     textField: {
         "& .MuiFilledInput-root": {
@@ -56,6 +72,14 @@ const useStyles = makeStyles(() => ({
             color: "orange"
         }
     },
+    checkbox: {
+        "& .MuiCheckbox-root": {
+            backgroundColor: "white"
+        },
+        "& .Mui-checked": {
+            backgroundColor: "white"
+        }
+    }
 }));
 
 export default function Login() {
@@ -86,6 +110,11 @@ export default function Login() {
         message: ""
     });
 
+    const [displayPasswordHelperText, setDisplayPasswordHelperText] = useState({
+        display: false,
+        message: ""
+    });
+
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("lol")
@@ -110,7 +139,19 @@ export default function Login() {
                 message: ""
             })
         }
-    }, [formValues.email_or_phone]);
+
+        if (formValues.password.length < 4 || formValues.password.length > 40) {
+            setDisplayPasswordHelperText({
+                display: true,
+                message: "Your password must contain between 4 and 60 characters."
+            })
+        } else {
+            setDisplayPasswordHelperText({
+                display: false,
+                message: ""
+            })
+        }
+    }, [formValues]);
 
 
     return(
@@ -143,31 +184,43 @@ export default function Login() {
                         Sign In
                     </Typography>
                     <FormControl>
-                        <TextField
-                            helperText={displayUsernameHelperText.display && displayUsernameHelperText.message}
-                            color={"warning"}
-                            variant={"filled"}
-                            label={"Email or phone number"}
-                            id={"email-or-phone-number"}
-                            onChange={handleChange}
-                            value={formValues.email_or_phone}
-                            name={"email_or_phone"}
-                            className={classes.textField}
-                            style={{marginBottom: "10px"}}
-                            inputProps={{ className: classes.input }}/>
-                        <TextField
-                            helperText={"heey"}
-                            variant={"filled"}
-                            label={"Password"}
-                            id={"password"}
-                            onChange={handleChange}
-                            value={formValues.password}
-                            name={"password"}
-                            className={classes.textField}
-                            inputProps={{ className: classes.input }}
-                            type={"password"}
-                        />
-                        <SignInButton variant={"contained"} type={"submit"}>Sign In</SignInButton>
+                        <FormGroup>
+                            <TextField
+                                helperText={displayUsernameHelperText.display && displayUsernameHelperText.message}
+                                color={"warning"}
+                                variant={"filled"}
+                                label={"Email or phone number"}
+                                id={"email-or-phone-number"}
+                                onChange={handleChange}
+                                value={formValues.email_or_phone}
+                                name={"email_or_phone"}
+                                className={classes.textField}
+                                style={{marginBottom: "10px"}}
+                                inputProps={{ className: classes.input }}/>
+                            <TextField
+                                helperText={displayPasswordHelperText.display && displayPasswordHelperText.message}
+                                variant={"filled"}
+                                label={"Password"}
+                                id={"password"}
+                                onChange={handleChange}
+                                value={formValues.password}
+                                name={"password"}
+                                className={classes.textField}
+                                inputProps={{ className: classes.input }}
+                                type={"password"}
+                            />
+                            <SignInButton variant={"contained"} type={"submit"}>Sign In</SignInButton>
+                        </FormGroup>
+                        <FormGroup row={true} sx={{
+                            alignContent: "center",
+                            alignItems: "center",
+                            justifyContent: "space-between"
+                        }}>
+                            <FormControlLabel className={classes.checkboxLabel} control={<Checkbox className={classes.checkbox}/>} label={<p style={{color: "#616161"}}>Remember me</p>} />
+                            <a style={{
+                                color: "#616161"
+                            }} href={"#"}>asdasd</a>
+                        </FormGroup>
                     </FormControl>
                 </Box>
             </Container>
