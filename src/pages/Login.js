@@ -10,10 +10,11 @@ import {
     FormGroup,
     styled,
     TextField,
-    Typography
+    Typography,
+    checkboxClasses
 } from "@mui/material";
 import {makeStyles} from "@material-ui/core";
-import {withStyles} from "@mui/material";
+import FacebookLogo from "../img/facebook-logo.svg"
 
 const useStyles = makeStyles(() => ({
     input: {
@@ -23,7 +24,11 @@ const useStyles = makeStyles(() => ({
     },
     checkboxLabel: {
         "& .MuiFormControlLabel-root": {
-            color: "#616161"
+            color: "#616161",
+            fontWeight: "bold"
+        },
+        "& .Mui-checked": {
+            color: "white"
         }
     },
     textField: {
@@ -32,7 +37,7 @@ const useStyles = makeStyles(() => ({
             backgroundColor: "#404040",
             color: "white",
             borderRadius: "5px",
-            borderBottom: "3px solid orange"
+            borderBottom: "3px solid #ff7e46"
 
         },
         "&:hover .MuiFilledInput-root": {
@@ -69,7 +74,7 @@ const useStyles = makeStyles(() => ({
         },
         "& .MuiInputLabel-outlined.Mui-focused": {},
         "& .MuiFormHelperText-root": {
-            color: "orange"
+            color: "#ff7e46"
         }
     },
     checkbox: {
@@ -98,6 +103,11 @@ export default function Login() {
             backgroundColor: "#E50914",
         }
     });
+
+    const FacebookButton = styled(Button)({
+        textTransform: "none",
+        color: "#828282"
+    })
 
     const [formValues, setFormValues] = useState({
         email_or_phone: "",
@@ -153,6 +163,10 @@ export default function Login() {
         }
     }, [formValues]);
 
+    function handleFacebookLogin() {
+        console.log("asd")
+    }
+
 
     return(
         <>
@@ -168,7 +182,7 @@ export default function Login() {
                 justifyContent: "center"
             }}>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{
-                    backgroundColor: "rgba(0,0,0,0.7)",
+                    backgroundColor: "rgba(0,0,0,0.8)",
                     padding: "50px 70px",
                     display: "flex",
                     flexDirection: "column",
@@ -216,10 +230,38 @@ export default function Login() {
                             alignItems: "center",
                             justifyContent: "space-between"
                         }}>
-                            <FormControlLabel className={classes.checkboxLabel} control={<Checkbox className={classes.checkbox}/>} label={<p style={{color: "#616161"}}>Remember me</p>} />
+                            <FormControlLabel className={classes.checkboxLabel} control={<Checkbox className={classes.checkbox} sx={{
+                                [`&, &.${checkboxClasses.checked}`]: {
+                                    color: '#828282',
+                                },
+                            }}/>} label={<p style={{color: "#828282", fontWeight: "medium"}}>Remember me</p>} />
                             <a style={{
-                                color: "#616161"
-                            }} href={"#"}>asdasd</a>
+                                color: "#828282",
+                                textDecoration: "none",
+                                fontWeight: "medium"
+                            }} href={"#"}>Need help?</a>
+                        </FormGroup>
+                        <FormGroup row={true} sx={{
+                            alignContent: "flex-start",
+                            alignItems: "flex-start",
+                            justifyContent: "space-between",
+                            marginTop: "20px"
+                        }}>
+                            <FacebookButton onClick={() => handleFacebookLogin()} disableRipple startIcon={<img width={"20px"} src={FacebookLogo} />}>
+                                Login with Facebook
+                            </FacebookButton>
+                        </FormGroup>
+                        <FormGroup row={true} sx={{
+                            alignContent: "flex-start",
+                            alignItems: "flex-start",
+                            marginTop: "10px"
+                        }}>
+                            <span style={{color: "#828282", marginRight: "5px", fontSize: "1.1em"}}>New to Netflix?</span>
+                            <a href={"#"} style={{
+                                textDecoration: "none",
+                                fontSize: "1.1em",
+                                color: "white"
+                            }}>Sign up now</a>
                         </FormGroup>
                     </FormControl>
                 </Box>
