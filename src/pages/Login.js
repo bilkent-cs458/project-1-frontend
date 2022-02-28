@@ -17,6 +17,10 @@ import {makeStyles} from "@material-ui/core";
 import FacebookLogo from "../img/facebook-logo.svg";
 import {facebookProvider} from '../config/authMethods';
 import socialMediaAuth from "../service/auth";
+import axios from "axios";
+import { useSnackbar } from "notistack";
+
+const API_URL = "http://localhost:3001";
 
 const useStyles = makeStyles(() => ({
     input: {
@@ -90,7 +94,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function Login() {
-
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [rememberMe, setRememberMe] = useState(false);
     let classes = useStyles();
 
     const SignInButton = styled(Button)({
@@ -114,7 +119,7 @@ export default function Login() {
     const [formValues, setFormValues] = useState({
         email_or_phone: "",
         password: "",
-        repeated_password: ""
+        remember_me: false
     });
 
     const [displayUsernameHelperText, setDisplayUsernameHelperText] = useState({
@@ -127,9 +132,43 @@ export default function Login() {
         message: ""
     });
 
+    useEffect(() => {
+        if (localStorage.getItem("user") != null && localStorage.getItem("user") !== undefined) {
+            let user = JSON.parse(localStorage.getItem("user"))
+            setFormValues({
+                email_or_phone: user.email,
+                password: user.password,
+                remember_me: true
+            })
+        } else {
+            setFormValues({
+                email_or_phone: "",
+                password: "",
+                remember_me: false
+            })
+        }
+    }, [])
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log("lol")
+        if (displayUsernameHelperText.display || displayPasswordHelperText.display) {
+            enqueueSnackbar("Please fill the username and password fields obeying the rules written beneath the text fields.", {variant: "warning"})
+            return
+        }
+        axios.post(API_URL + "/auth/login", {
+            email: formValues.email_or_phone,
+            password: formValues.password
+        }).then((response) => {
+            if (rememberMe) {
+                localStorage.setItem("user", JSON.stringify({
+                    email: formValues.email_or_phone,
+                    password: formValues.password
+                }))
+            }
+            enqueueSnackbar(response.data.message, {variant: "success"})
+        }).catch((error) => {
+            enqueueSnackbar(error.response.data.message, {variant: "error"})
+        })
     }
 
     const handleChange = (event) => {
@@ -139,8 +178,10 @@ export default function Login() {
         });
     };
 
+    const handleChangeRememberMe = () => setRememberMe(!rememberMe)
+
     useEffect(() => {
-        if (formValues.email_or_phone.length === 0 || !formValues.email_or_phone.includes("@")) {
+        if (formValues.email_or_phone != null && formValues.email_or_phone.length === 0 || !formValues.email_or_phone.includes("@")) {
             setDisplayUsernameHelperText({
                 display: true,
                 message: "Please enter a valid username or email"
@@ -232,11 +273,19 @@ export default function Login() {
                             alignItems: "center",
                             justifyContent: "space-between"
                         }}>
-                            <FormControlLabel className={classes.checkboxLabel} control={<Checkbox className={classes.checkbox} sx={{
-                                [`&, &.${checkboxClasses.checked}`]: {
-                                    color: '#828282',
-                                },
-                            }}/>} label={<p style={{color: "#828282", fontWeight: "medium"}}>Remember me</p>} />
+                            <FormControlLabel className={classes.checkboxLabel} control={
+                                <Checkbox name={"remember_me"}
+                                          checked={rememberMe}
+                                          onChange={handleChangeRememberMe}
+                                          className={classes.checkbox}
+                                          sx={{
+                                            [`&, &.${checkboxClasses.checked}`]:
+                                                {
+                                                    color: '#828282',
+                                                },
+                                          }}
+                                />
+                            } label={<p style={{color: "#828282", fontWeight: "medium"}}>Remember me</p>} />
                             <a style={{
                                 color: "#828282",
                                 textDecoration: "none",
