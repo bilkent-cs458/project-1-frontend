@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import NetflixLogo from "../img/netflix-logo.svg"
+import NetflixLogo from "../img/netflix-logo.svg";
 import {
     Box,
     Button,
@@ -14,7 +14,9 @@ import {
     checkboxClasses
 } from "@mui/material";
 import {makeStyles} from "@material-ui/core";
-import FacebookLogo from "../img/facebook-logo.svg"
+import FacebookLogo from "../img/facebook-logo.svg";
+import {facebookProvider} from '../config/authMethods';
+import socialMediaAuth from "../service/auth";
 
 const useStyles = makeStyles(() => ({
     input: {
@@ -163,10 +165,10 @@ export default function Login() {
         }
     }, [formValues]);
 
-    function handleFacebookLogin() {
-        console.log("asd")
-    }
-
+    const handleFacebookLogin = async (provider)=>{
+        const res = await socialMediaAuth(provider);
+        console.log(res);        
+    };
 
     return(
         <>
@@ -247,7 +249,7 @@ export default function Login() {
                             justifyContent: "space-between",
                             marginTop: "20px"
                         }}>
-                            <FacebookButton onClick={() => handleFacebookLogin()} disableRipple startIcon={<img width={"20px"} src={FacebookLogo} />}>
+                            <FacebookButton onClick={() => handleFacebookLogin(facebookProvider)} disableRipple startIcon={<img width={"20px"} src={FacebookLogo} />}>
                                 Login with Facebook
                             </FacebookButton>
                         </FormGroup>
