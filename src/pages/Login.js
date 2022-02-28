@@ -208,7 +208,16 @@ export default function Login() {
 
     const handleFacebookLogin = async (provider)=>{
         const res = await socialMediaAuth(provider);
-        console.log(res);        
+        console.log(res);    
+        console.log(res.status); 
+        console.log(res.statusCode);
+        if(res!==undefined && res != null){
+            enqueueSnackbar("Facebook login successful", {
+                variant:"success"
+            });
+
+        }
+           
     };
 
     return(
