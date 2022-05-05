@@ -181,29 +181,34 @@ export default function Login() {
     const handleChangeRememberMe = () => setRememberMe(!rememberMe)
 
     useEffect(() => {
-        if (formValues.email_or_phone != null && formValues.email_or_phone.length === 0 || !formValues.email_or_phone.includes("@")) {
-            setDisplayUsernameHelperText({
-                display: true,
-                message: "Please enter a valid username or email"
-            })
-        } else {
-            setDisplayUsernameHelperText({
-                display: false,
-                message: ""
-            })
+        if (formValues.email_or_phone) {
+            if (formValues.email_or_phone != null && formValues.email_or_phone.length === 0 || !formValues.email_or_phone.includes("@")) {
+                setDisplayUsernameHelperText({
+                    display: true,
+                    message: "Please enter a valid username or email"
+                })
+            } else {
+                setDisplayUsernameHelperText({
+                    display: false,
+                    message: ""
+                })
+            }
         }
 
-        if (formValues.password.length < 4 || formValues.password.length > 40) {
-            setDisplayPasswordHelperText({
-                display: true,
-                message: "Your password must contain between 4 and 60 characters."
-            })
-        } else {
-            setDisplayPasswordHelperText({
-                display: false,
-                message: ""
-            })
+        if (formValues.password) {
+            if (formValues.password.length < 4 || formValues.password.length > 40) {
+                setDisplayPasswordHelperText({
+                    display: true,
+                    message: "Your password must contain between 4 and 60 characters."
+                })
+            } else {
+                setDisplayPasswordHelperText({
+                    display: false,
+                    message: ""
+                })
+            }
         }
+
     }, [formValues]);
 
     const handleFacebookLogin = async (provider)=>{
